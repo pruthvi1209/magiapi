@@ -79,6 +79,11 @@ router.get('/repo', (req, res) => {
   }); 
 })
 
+
+router.get('/', (req, res) => {
+	res.send("Server is running");
+})
+
 //signup
 
 router.post('/insert', function (req, res, next){
