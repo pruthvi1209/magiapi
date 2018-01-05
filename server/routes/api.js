@@ -78,9 +78,9 @@ res.send("Server is running..");
 
 
 router.get('/repo', (req, res) => {
-    MongoClient.connect('mongodb://localhost', function (err, client) {
+    MongoClient.connect('mongodb://mongosql.westus2.cloudapp.azure.com', function (err, client) {
     if (err) throw err;
-    var db = client.db('mean');
+    var db = client.db('ngvirtual');
     db.collection('repository')
     .find()
     .toArray()
