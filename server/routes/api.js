@@ -21,6 +21,7 @@ let response = {
     data:[],
     message:null
 };
+ 
 
 
 // file upload start
@@ -44,10 +45,19 @@ const upload = multer({
 
 //Uploading end
 
+
+//for cors error
+router.use(function(req, res, next) {
+res.header("Access-Control-Allow-Origin", "*");
+res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+next();
+}); 
+
+
 router.get('/users', (req, res) => {
-  MongoClient.connect('mongodb://172.17.124.75', function (err, client) {
+  MongoClient.connect('mongodb://mongosql.westus2.cloudapp.azure.com', function (err, client) {
   if (err) throw err;
-  var db = client.db('mean');
+  var db = client.db('ngvirtual');
   db.collection('users')
   .find()
   .toArray()
@@ -104,7 +114,6 @@ router.post('/insert', function (req, res, next){
                
         });
     });
-    res.redirect('/login');
 });
 
 
