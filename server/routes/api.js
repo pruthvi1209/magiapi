@@ -7,6 +7,13 @@ const app=express();
 
 //const ObjectID = require('mongodb.ObjectID');
 
+//for cors error
+router.use(function(req, res, next) {
+    res.header("Access-Control-Allow-Origin", "*");
+    res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+    next();
+    }); 
+
 //error handling
 const sendError = (err, res) => {
     response.status = 501;
@@ -43,15 +50,39 @@ const upload = multer({
     storage : storage
 }).single('myfile');
 
+//post image
+router.post('/uploading', (req, res) => {
+    upload(req, res, err=>{
+          if(err) throw err;
+          if (!req.file) {
+              console.log("No file received");
+              return res.send("No file selected");
+          }
+          else{
+                    MongoClient.connect('mongodb://localhost', function (err, client) {
+                      if (err) throw err;
+                      var db = client.db('mean');
+                      db.collection('repository').update(
+                          { _id: "repo" },
+                          { $addToSet: { objects: { $each: [ {
+                                                              "id" : "obj-"+Date.now(),
+                                                              "name" : req.body.item,
+                                                              "imageURL" : req.file.path,
+                                                              "layoutCategory" : req.body.category
+                                                             } 
+                                                           ]
+                                                  }
+                                        }
+                          }
+                        );
+                      }); 
+                  res.redirect('/admin/upload');
+          }
+      })
+  
+  })
+
 //Uploading end
-
-
-//for cors error
-router.use(function(req, res, next) {
-res.header("Access-Control-Allow-Origin", "*");
-res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
-next();
-}); 
 
 
 router.get('/users', (req, res) => {
@@ -95,7 +126,6 @@ router.get('/repo', (req, res) => {
 })
 
 //signup
-
 router.post('/insert', function (req, res, next){
      var user = {
         name:req.body.username,
@@ -115,43 +145,5 @@ router.post('/insert', function (req, res, next){
         });
     });
 });
-
-
-//post image
-router.post('/uploading', (req, res) => {
-  upload(req, res, err=>{
-    console.log(req.body);
-
-        if(err) throw err;
-        if (!req.file) {
-            console.log("No file received");
-            return res.send("No file selected");
-        }
-        else{
-                console.log(req.file);
-                  MongoClient.connect('mongodb://localhost', function (err, client) {
-                    if (err) throw err;
-                    var db = client.db('mean');
-                    // db.collection('repository').insertOne(req.file);
-                    db.collection('repository').update(
-                        { _id: "repo" },
-                        { $addToSet: { objects: { $each: [ {
-                                                            "id" : "obj-"+Date.now(),
-                                                            "name" : req.body.item,
-                                                            "imageURL" : req.file.path,
-                                                            "layoutCategory" : req.body.category
-                                                           } 
-                                                         ]
-                                                }
-                                      }
-                        }
-                      );
-                    console.log("Image inserted into db");
-                    }); 
-                res.redirect('/admin/upload');
-        }
-    })
-
-})
 
 module.exports = router;
