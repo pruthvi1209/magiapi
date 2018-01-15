@@ -60,7 +60,7 @@ router.get('/getProject', (req, res) => {
 }); 
 })
 
-//
+//fetch user details for login validation
 router.get('/users', (req, res) => {
   MongoClient.connect('mongodb://mongosql.westus2.cloudapp.azure.com', function (err, client) {
   if (err) throw err;
@@ -288,7 +288,7 @@ router.post('/upload',
 
 //Uploading end
 
-//
+//retrieving objects
 router.get('/getObjects',(req,res)=>{
 MongoClient.connect('mongodb://mongosql.westus2.cloudapp.azure.com', function (err, client) {
   if (err) throw err;
