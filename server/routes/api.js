@@ -242,12 +242,6 @@ router.post('/upload',
                            {name: 'left', maxCount: 1}
                           ]),
              function (req, res, next) {
-                
-                console.log("-------------------body-------------------------");
-                console.log(req.body);
-                console.log("-------------------file-----------------");
-                console.log(req.files);
-
                 if(req.body.type=='layout'){
                   MongoClient.connect('mongodb://mongosql.westus2.cloudapp.azure.com', function (err, client) {
                     if (err) throw err;
@@ -282,7 +276,7 @@ router.post('/upload',
                         console.log("Image inserted into db");
                         });
                 }
-                res.redirect('http://localhost:4200/admin/'+req.body.type);
+                res.redirect('http://magicdecor.azurewebsites.net/admin/'+req.body.type);
 
   });
 
