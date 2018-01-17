@@ -248,14 +248,14 @@ router.post('/upload',
                     var db = client.db('ngvirtual');
                     db.collection('layouts').insertOne({
                                                         "name" : "test",
-                                                        "thumbnail" : "",
+                                                        "thumbnail" : req.files.thumbnail[0].path,
                                                         "sides" : [ 
                                                                     req.files.right[0].path,
                                                                     req.files.top[0].path, 
                                                                     req.files.left[0].path,
                                                                     req.files.bottom[0].path, 
                                                                     req.files.front[0].path, 
-                                                                    req.files.back[0].path 
+                                                                    req.files.back[0].path,
                                                                     ],
                                                         "dimensions" : [ 250, 100, 160],
                                                         "layoutCategory" : req.body.category
@@ -276,7 +276,7 @@ router.post('/upload',
                         console.log("Image inserted into db");
                         });
                 }
-                res.redirect('http://magicdecor.azurewebsites.net/admin/'+req.body.type);
+                res.redirect('http://magicdecor.azurewebsites.net/#/admin/'+req.body.type);
 
   });
 
