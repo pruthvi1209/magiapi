@@ -234,12 +234,13 @@ const upload = multer({storage: storage});
 //Upload layout or item
 router.post('/upload',
              upload.fields([
+                            {name: 'right', maxCount: 1},
+                            {name: 'left', maxCount: 1},
                            {name: 'top', maxCount: 1},
                            {name: 'bottom', maxCount: 1},
                            {name: 'front', maxCount: 1},
-                           {name: 'back', maxCount: 1},
-                           {name: 'right', maxCount: 1},
-                           {name: 'left', maxCount: 1}
+                           {name: 'back', maxCount: 1}
+                           
                           ]),
              function (req, res, next) {
                 if(req.body.type=='layout'){
@@ -248,7 +249,7 @@ router.post('/upload',
                     var db = client.db('ngvirtual');
                     db.collection('layouts').insertOne({
                                                         "name" : "test",
-                                                        "thumbnail" : req.files.thumbnail[0].path,
+                                                        "thumbnail" : req.body.thumbnail,
                                                         "sides" : [ 
                                                                     req.files.right[0].path,
                                                                     req.files.top[0].path, 
