@@ -27,11 +27,11 @@ next();
 }); 
 
 //insert project
-router.post('/insertProject', (res, req)=>{
+router.post('/insertProject', (req, res)=>{
     MongoClient.connect('mongodb://mongosql.westus2.cloudapp.azure.com', function (err, client){
         const body = {
-            scene: res.body.scene,
-            name:res.body.name
+            scene: req.body.objects,
+            name:req.body.roomName
         }
         if(err) throw err;
         var db = client.db('ngvirtual');
