@@ -13,6 +13,7 @@ app.use(bodyParser.urlencoded({extended: false}));
 
 //Angular dist output folder
 app.use(express.static(path.join(__dirname, 'dist')));
+app.use(express.static(path.join(__dirname, 'assets')));
 
 //API location
 app.use('/api', api);
