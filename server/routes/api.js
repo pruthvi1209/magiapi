@@ -241,9 +241,9 @@ router.post('/upload',
                            {name: 'bottom', maxCount: 1},
                            {name: 'front', maxCount: 1},
                            {name: 'back', maxCount: 1}
-                           
                           ]),
              function (req, res, next) {
+                let location = "http://magicdecorapi.azurewebsites.net/layout/images/";
                 if(req.body.type=='layout'){
                   MongoClient.connect('mongodb://mongosql.westus2.cloudapp.azure.com', function (err, client) {
                     if (err) throw err;
@@ -252,12 +252,12 @@ router.post('/upload',
                                                         "name" : "test",
                                                         "thumbnail" : req.body.thumbnail,
                                                         "sides" : [ 
-                                                                    req.files.right[0].path,
-                                                                    req.files.top[0].path, 
-                                                                    req.files.left[0].path,
-                                                                    req.files.bottom[0].path, 
-                                                                    req.files.front[0].path, 
-                                                                    req.files.back[0].path,
+                                                                    location+req.files.right[0].filename,
+                                                                    location+req.files.top[0].filename, 
+                                                                    location+req.files.left[0].filename,
+                                                                    location+req.files.bottom[0].filename, 
+                                                                    location+req.files.front[0].filename, 
+                                                                    location+req.files.back[0].filename,
                                                                     ],
                                                         "dimensions" : [ 250, 100, 160],
                                                         "layoutCategory" : req.body.category
