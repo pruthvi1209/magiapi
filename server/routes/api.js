@@ -19,13 +19,6 @@ let response = {
     message:null
 };
 
-//cors error solution
-router.use(function(req, res, next) {
-res.header("Access-Control-Allow-Origin", "*");
-res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
-next();
-}); 
-
 //insert project
 router.post('/insertProject', (req, res)=>{
     MongoClient.connect('mongodb://mongosql.westus2.cloudapp.azure.com', function (err, client){
