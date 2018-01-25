@@ -19,13 +19,6 @@ let response = {
     message:null
 };
 
-//cors error solution
-router.use(function(req, res, next) {
-res.header("Access-Control-Allow-Origin", "*");
-res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
-next();
-}); 
-
 //insert project
 router.post('/insertProject', (req, res)=>{
     MongoClient.connect('mongodb://mongosql.westus2.cloudapp.azure.com', function (err, client){
@@ -238,23 +231,23 @@ router.post('/upload',
                            {name: 'bottom', maxCount: 1},
                            {name: 'front', maxCount: 1},
                            {name: 'back', maxCount: 1}
-                           
                           ]),
              function (req, res, next) {
+                let location = "http://magicdecorapi.azurewebsites.net/layout/images/";
                 if(req.body.type=='layout'){
                   MongoClient.connect('mongodb://mongosql.westus2.cloudapp.azure.com', function (err, client) {
                     if (err) throw err;
                     var db = client.db('ngvirtual');
                     db.collection('layouts').insertOne({
                                                         "name" : "test",
-                                                        "thumbnail" : "req.body.thumbnail",
+                                                        "thumbnail" : req.body.thumbnail,
                                                         "sides" : [ 
-                                                                    req.files.right[0].path,
-                                                                    req.files.top[0].path, 
-                                                                    req.files.left[0].path,
-                                                                    req.files.bottom[0].path, 
-                                                                    req.files.front[0].path, 
-                                                                    req.files.back[0].path,
+                                                                    location+req.files.right[0].filename,
+                                                                    location+req.files.top[0].filename, 
+                                                                    location+req.files.left[0].filename,
+                                                                    location+req.files.bottom[0].filename, 
+                                                                    location+req.files.front[0].filename, 
+                                                                    location+req.files.back[0].filename,
                                                                     ],
                                                         "dimensions" : [ 250, 100, 160],
                                                         "layoutCategory" : req.body.category
