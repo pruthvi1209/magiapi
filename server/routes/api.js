@@ -29,13 +29,10 @@ next();
 //insert project
 router.post('/insertProject', (req, res)=>{
     MongoClient.connect('mongodb://mongosql.westus2.cloudapp.azure.com', function (err, client){
-        const body = {
-            scene: req.body.objects,
-            roomName:req.body.roomName
-        }
         if(err) throw err;
         var db = client.db('ngvirtual');
-       db.collection('repo').insertOne(body, function(err, result){
+        console.log(req.body);
+       db.collection('repo').insertOne(req.body, function(err, result){
             if (err) throw err;
                client.close();
                res.send("Done");
