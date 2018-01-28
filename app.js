@@ -14,8 +14,8 @@ app.use(function(req, res, next) {
 const api = require('./server/routes/api')
 
 //Parsers
-app.use(bodyParser.json())
-app.use(bodyParser.urlencoded({extended: false}));
+app.use(bodyParser.json({limit: '50mb'}));
+app.use(bodyParser.urlencoded({limit: '50mb', extended: true}));
 
 //Angular dist output folder
 app.use(express.static(path.join(__dirname, 'dist')));
