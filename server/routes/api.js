@@ -226,10 +226,10 @@ router.post('/upload',
              upload.fields([
                             {name: 'right', maxCount: 1},
                             {name: 'left', maxCount: 1},
-                           {name: 'top', maxCount: 1},
-                           {name: 'bottom', maxCount: 1},
-                           {name: 'front', maxCount: 1},
-                           {name: 'back', maxCount: 1}
+                            {name: 'top', maxCount: 1},
+                            {name: 'bottom', maxCount: 1},
+                            {name: 'front', maxCount: 1},
+                            {name: 'back', maxCount: 1}
                           ]),
              function (req, res, next) {
                 if(req.body.type=='layout'){
