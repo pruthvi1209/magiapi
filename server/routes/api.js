@@ -34,6 +34,25 @@ router.post('/insertProject', (req, res)=>{
 })
 
 //retrieve project
+router.get('/getProject', (req, res) => {
+    MongoClient.connect('mongodb://mongosql.westus2.cloudapp.azure.com', function (err, client) {
+    if (err) throw err;
+    var db = client.db('ngvirtual');
+    db.collection('repo')
+    .find()
+    .toArray()
+    .then((users) => {
+        response.data = users;
+        res.json(response);
+    })
+    .catch((err) => {
+      console.log(err);
+    });
+  }); 
+  })
+  
+
+//retrieve project
 router.get('/getProject/:id', (req, res) => {   
     //console.log(req.params.id);
   MongoClient.connect('mongodb://mongosql.westus2.cloudapp.azure.com', function (err, client) {
