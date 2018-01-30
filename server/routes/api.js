@@ -4,6 +4,7 @@ const MongoClient = require('mongodb').MongoClient;
 const multer = require('multer');
 const path = require('path');
 const app=express();
+var ObjectID = require('mongodb').ObjectID;   
 
 //error handling
 const sendError = (err, res) => {
@@ -33,13 +34,13 @@ router.post('/insertProject', (req, res)=>{
 })
 
 //retrieve project
-router.get('/getProject', (req, res) => {
+router.get('/getProject/:id', (req, res) => {   
+    //console.log(req.params.id);
   MongoClient.connect('mongodb://mongosql.westus2.cloudapp.azure.com', function (err, client) {
   if (err) throw err;
   var db = client.db('ngvirtual');
   db.collection('repo')
-  .find()
-  .toArray()
+  .findOne( {"_id": new ObjectID(req.params.id)} )
   .then((users) => {
       response.data = users;
       res.json(response);
@@ -48,6 +49,22 @@ router.get('/getProject', (req, res) => {
     console.log(err);
   });
 }); 
+})
+router.get('/layouts/:name', (req, res) => {
+    //console.log(req.params.name);
+    MongoClient.connect('mongodb://mongosql.westus2.cloudapp.azure.com', function (err, client) {
+    if (err) throw err;
+    var db = client.db('ngvirtual');
+    db.collection('layouts')
+    .findOne({"name" : req.params.name})
+    .then((layouts) => {
+        response.data = layouts;
+        res.json(response);
+    })
+    .catch((err) => {
+      console.log(err);
+    });
+  }); 
 })
 
 //fetch user details for login validation
