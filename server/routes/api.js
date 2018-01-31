@@ -33,6 +33,33 @@ router.post('/insertProject', (req, res)=>{
     })
 })
 
+//update project
+router.put('/updateProject', (req, res)=>{
+    MongoClient.connect('mongodb://mongosql.westus2.cloudapp.azure.com', function (err, client){
+        if(err) throw err;
+        var db = client.db('ngvirtual');
+    db.collection('repo').updateOne(
+      { "_id" : ObjectID(req.body.objid) },
+      { $set: { 
+            name:req.body.name,
+            desc:req.body.desc,
+            fav:req.body.fav,
+            ctime:req.body.ctime,
+            preview:req.body.preview,
+            creator:req.body.creator,
+            roomName:req.body.roomName,
+            object:req.body.object,
+            lastModified: new Date().toUTCString()
+      
+       } } ,function(err, result){
+             if (err) throw err;
+               client.close();
+              res.send("Done");
+       }
+   );
+    })
+})
+
 //retrieve project
 router.get('/getProject', (req, res) => {
     MongoClient.connect('mongodb://mongosql.westus2.cloudapp.azure.com', function (err, client) {
