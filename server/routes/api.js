@@ -199,6 +199,7 @@ router.post('/sendmsg', function (req, res, next){
      var msg = {
         msgSubject:req.body.msgSubject,
         msgBody:req.body.msgBody,
+        sender_id:req.body.from_id,
         sender:req.body.from,
         msgDate:req.body.msgDate,
         to:req.body.to
