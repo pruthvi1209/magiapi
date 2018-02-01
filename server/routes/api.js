@@ -221,7 +221,8 @@ router.post('/sendmsg', function (req, res, next){
 //for sending reply to users
 router.post('/reply', function (req, res, next){
      var reply = {
-       to:req.body.to,
+       to_name:req.body.to_name,
+       to_id:req.body.to_name,
        from:req.body.from,
        from_id:req.body.from_id,
        reply:req.body.reply,
@@ -233,9 +234,17 @@ router.post('/reply', function (req, res, next){
         var db = client.db('ngvirtual');
         db.collection('reply').insertOne(reply, function(err, result){
             if (err) throw err;
+            const chat = {
+                sender_name: reply.from,
+                sender_id: reply.from_id,
+                receiver_id: reply.to_id,
+                reciver_name: reply.to_name
+            }
+            db.collection('chats').insertOne(chat, function(err, result){
+                if (err) throw err;
             res.send("reply sent")
                client.close();
-               
+            });
         });
     });
 });
