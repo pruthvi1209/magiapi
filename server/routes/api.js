@@ -313,7 +313,7 @@ router.post('/upload',
                     if (err) throw err;
                     var db = client.db('ngvirtual');
                     db.collection('layouts').insertOne({
-                                                        "name" : "test",
+                                                        "name" : req.body.name,
                                                         "thumbnail" : req.body.thumbnail,
                                                         "sides" : [ 
                                                                     location+req.files.right[0].filename,
