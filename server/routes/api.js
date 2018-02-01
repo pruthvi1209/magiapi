@@ -222,7 +222,7 @@ router.post('/sendmsg', function (req, res, next){
 router.post('/reply', function (req, res, next){
      var reply = {
        to_name:req.body.to_name,
-       to_id:req.body.to_name,
+       to_id:req.body.to_id,
        from:req.body.from,
        from_id:req.body.from_id,
        reply:req.body.reply,
