@@ -4,7 +4,8 @@ const MongoClient = require('mongodb').MongoClient;
 const multer = require('multer');
 const path = require('path');
 const app=express();
-var ObjectID = require('mongodb').ObjectID;   
+var ObjectID = require('mongodb').ObjectID;
+const location="https://magicdecorapi.azurewebsites.net/layout/images/";  
 
 //error handling
 const sendError = (err, res) => {
