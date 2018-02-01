@@ -223,7 +223,9 @@ router.post('/reply', function (req, res, next){
      var reply = {
        to:req.body.to,
        from:req.body.from,
-       reply:req.body.reply
+       from_id:req.body.from_id,
+       reply:req.body.reply,
+       replyDate:req.body.replyDate
     };
 
     MongoClient.connect("mongodb://mongosql.westus2.cloudapp.azure.com", function(err, client){
