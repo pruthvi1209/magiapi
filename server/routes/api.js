@@ -78,6 +78,24 @@ router.get('/getProject', (req, res) => {
     });
   }); 
   })
+
+ //get chats 
+router.get('/getChats', (req, res) => {
+    MongoClient.connect('mongodb://mongosql.westus2.cloudapp.azure.com', function (err, client) {
+    if (err) throw err;
+    var db = client.db('ngvirtual');
+    db.collection('chats')
+    .find()
+    .toArray()
+    .then((chats) => {
+        response.data = chats;
+        res.json(response);
+    })
+    .catch((err) => {
+      console.log(err);
+    });
+  }); 
+  })
   
 
 //retrieve project
@@ -214,7 +232,9 @@ router.post('/sendmsg', function (req, res, next){
             const chat = {
                 sender_id: msg.sender_id,
                 sender_name: msg.sender,
-                receiver: msg.to
+                receiver: msg.to,
+                chat: msg.msgBody,
+                chatDate: new Date().toUTCString()
             }
             db.collection('chats').insertOne(chat, function(err, result){
                 
@@ -248,7 +268,8 @@ router.post('/reply', function (req, res, next){
                 sender_id: reply.from_id,
                 receiver_id: reply.to_id,
                 reciver_name: reply.to_name,
-                chat: reply.reply
+                chat: reply.reply,
+                chatDate: reply.replyDate
             }
             db.collection('chats').insertOne(chat, function(err, result){
                 if (err) throw err;
