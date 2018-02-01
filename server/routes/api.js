@@ -78,6 +78,24 @@ router.get('/getProject', (req, res) => {
     });
   }); 
   })
+
+ //get chats 
+router.get('/getChats', (req, res) => {
+    MongoClient.connect('mongodb://mongosql.westus2.cloudapp.azure.com', function (err, client) {
+    if (err) throw err;
+    var db = client.db('ngvirtual');
+    db.collection('chats')
+    .find()
+    .toArray()
+    .then((chats) => {
+        response.data = chats;
+        res.json(response);
+    })
+    .catch((err) => {
+      console.log(err);
+    });
+  }); 
+  })
   
 
 //retrieve project
