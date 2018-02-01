@@ -202,7 +202,7 @@ router.post('/sendmsg', function (req, res, next){
         sender_id:req.body.from_id,
         sender:req.body.from,
         msgDate:req.body.msgDate,
-        to:req.body.to
+        to:'admin'
     };
 
     MongoClient.connect("mongodb://mongosql.westus2.cloudapp.azure.com", function(err, client){
@@ -210,9 +210,17 @@ router.post('/sendmsg', function (req, res, next){
         var db = client.db('ngvirtual');
         db.collection('messages').insertOne(msg, function(err, result){
             if (err) throw err;
+            const chat = {
+                sender_id: msg.sender_id,
+                sender_name: msg.sender,
+                receiver: msg.to
+            }
+            db.collection('chats').insertOne(chat, function(err, result){
+                
             res.send("message sent")
                console.log("message sent");
                client.close();
+            })
                
         });
     });
@@ -235,10 +243,11 @@ router.post('/reply', function (req, res, next){
         db.collection('reply').insertOne(reply, function(err, result){
             if (err) throw err;
             const chat = {
-                sender_name: reply.from,
+                sender_name: 'admin',
                 sender_id: reply.from_id,
                 receiver_id: reply.to_id,
-                reciver_name: reply.to_name
+                reciver_name: reply.to_name,
+                chat: reply.reply
             }
             db.collection('chats').insertOne(chat, function(err, result){
                 if (err) throw err;
