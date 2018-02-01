@@ -314,7 +314,10 @@ router.post('/upload',
                             {name: 'top', maxCount: 1},
                             {name: 'bottom', maxCount: 1},
                             {name: 'front', maxCount: 1},
-                            {name: 'back', maxCount: 1}
+                            {name: 'back', maxCount: 1},
+                            {name: 'thumbnail', maxCount: 1},
+                            {name: 'jsfile', maxCount: 1},
+                            {name: 'texture', maxCount: 1}
                           ]),
              function (req, res, next) {
                 if(req.body.type=='layout'){
@@ -335,7 +338,6 @@ router.post('/upload',
                                                         "dimensions" : [ 250, 100, 160],
                                                         "layoutCategory" : req.body.category
                                                         });             
-                    console.log("Image inserted into db");
                     });
                 }
                 else if(req.body.type=='item')
@@ -343,12 +345,14 @@ router.post('/upload',
                     MongoClient.connect('mongodb://mongosql.westus2.cloudapp.azure.com', function (err, client) {
                         if (err) throw err;
                         var db = client.db('ngvirtual');
-                        db.collection('items').insertOne({
-                                                            "name" : "test",
-                                                            "thumbnail" : "",
-                                                            "layoutCategory" : req.body.category
-                                                            });             
-                        console.log("Image inserted into db");
+                        db.collection('a_objects').insertOne({
+                                                            "name" : req.body.name,
+                                                            "itemtype" : req.body.itemtype,
+                                                            "texture"   : location+req.files.texture[0].filename,
+                                                            "jsfile"   : location+req.files.jsfile[0].filename,
+                                                            "thumbnail" : location+req.files.thumbnail[0].filename,
+                                                            "category" : req.body.category.split(",")
+                                                            });              
                         });
                 }
                 res.redirect('http://magicdecor.azurewebsites.net/#/admin/'+req.body.type);
