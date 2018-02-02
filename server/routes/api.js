@@ -115,6 +115,26 @@ router.get('/getProject/:id', (req, res) => {
   });
 }); 
 })
+
+//retrieve project by creator
+router.get('/getUserProject/:id', (req, res) => {   
+  console.log("called");
+  MongoClient.connect('mongodb://mongosql.westus2.cloudapp.azure.com', function (err, client) {
+  if (err) throw err;
+  var db = client.db('ngvirtual');
+  db.collection('repo')
+  .find( {"creator": req.params.id} )
+  .toArray()
+  .then((users) => {
+      response.data = users;
+      res.json(response);
+  })
+  .catch((err) => {
+    console.log(err);
+  });
+}); 
+})
+
 router.get('/layouts/:name', (req, res) => {
     //console.log(req.params.name);
     MongoClient.connect('mongodb://mongosql.westus2.cloudapp.azure.com', function (err, client) {
