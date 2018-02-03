@@ -32,16 +32,13 @@ router.post('/register',(req,res)=>{
        db.collection('users').findOne({"mid":req.body.mid}, function(err, result){
             if (err) throw err;
             if(!result){
-                db.collection('users').insert(req.body,function(err, user){
+                mid= req.body;
+                db.collection('users').insertOne(mid,function(err, user){
                     if(err) throw err;
-                    client.close();
                     console.log("New user created");
                 })
             }
-    // db.collection('users').findOne({"mid":req.body.mid},function(err,userData){
-    //     console.log(userData);
-    // })
-           // console.log(result);
+     db.collection('users').findOne({"mid":req.body.mid},function(err,userData){
             const token = jwt.sign({
                 data:req.body.mid},'secret-message',{
                     expiresIn: 604800 // 1 week
@@ -54,9 +51,9 @@ router.post('/register',(req,res)=>{
                     }
 
                 });
+            })
             });
-        
-               client.close();
+
         });
     })
 
