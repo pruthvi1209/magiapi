@@ -4,6 +4,8 @@ const MongoClient = require('mongodb').MongoClient;
 const multer = require('multer');
 const path = require('path');
 const app=express();
+const jwt = require('jsonwebtoken');
+const passport = require('passport');
 var ObjectID = require('mongodb').ObjectID;
 const location="https://magicdecorapi.azurewebsites.net/layout/images/";  
 
@@ -20,6 +22,44 @@ let response = {
     data:[],
     message:null
 };
+
+//insert project
+router.post('/register',(req,res)=>{
+    
+    MongoClient.connect('mongodb://mongosql.westus2.cloudapp.azure.com', function (err, client){
+        if(err) throw err;
+        var db = client.db('ngvirtual');
+       db.collection('users').findOne({"mid":req.body.mid}, function(err, result){
+            if (err) throw err;
+            if(!result){
+                db.collection('users').insert(req.body,function(err, user){
+                    if(err) throw err;
+                    client.close();
+                    console.log("New user created");
+                })
+            }
+    // db.collection('users').findOne({"mid":req.body.mid},function(err,userData){
+    //     console.log(userData);
+    // })
+           // console.log(result);
+            const token = jwt.sign({
+                data:req.body.mid},'secret-message',{
+                    expiresIn: 604800 // 1 week
+                });
+                res.json({
+                    success:true,
+                    token:`Bearer ${token}`,
+                    user:{
+                        mid:req.body.mid
+                    }
+
+                });
+            });
+        
+               client.close();
+        });
+    })
+
 
 //insert project
 router.post('/insertProject', (req, res)=>{
@@ -62,7 +102,7 @@ router.put('/updateProject', (req, res)=>{
 })
 
 //retrieve project
-router.get('/getProject', (req, res) => {
+router.get('/getProject', passport.authenticate('jwt',{session:false}),(req, res) => {
     MongoClient.connect('mongodb://mongosql.westus2.cloudapp.azure.com', function (err, client) {
     if (err) throw err;
     var db = client.db('ngvirtual');
@@ -80,7 +120,7 @@ router.get('/getProject', (req, res) => {
   })
 
  //get chats 
-router.get('/getChats', (req, res) => {
+router.get('/getChats', passport.authenticate('jwt',{session:false}),(req, res) => {
     MongoClient.connect('mongodb://mongosql.westus2.cloudapp.azure.com', function (err, client) {
     if (err) throw err;
     var db = client.db('ngvirtual');
@@ -99,7 +139,7 @@ router.get('/getChats', (req, res) => {
   
 
 //retrieve project
-router.get('/getProject/:id', (req, res) => {   
+router.get('/getProject/:id',passport.authenticate('jwt',{session:false}), (req, res) => {   
     //console.log(req.params.id);
   MongoClient.connect('mongodb://mongosql.westus2.cloudapp.azure.com', function (err, client) {
   if (err) throw err;
@@ -117,7 +157,7 @@ router.get('/getProject/:id', (req, res) => {
 })
 
 //retrieve project by creator
-router.get('/getUserProject/:id', (req, res) => {   
+router.get('/getUserProject/:id',passport.authenticate('jwt',{session:false}), (req, res) => {   
   console.log("called");
   MongoClient.connect('mongodb://mongosql.westus2.cloudapp.azure.com', function (err, client) {
   if (err) throw err;
@@ -135,7 +175,7 @@ router.get('/getUserProject/:id', (req, res) => {
 }); 
 })
 
-router.get('/layouts/:name', (req, res) => {
+router.get('/layouts/:name', passport.authenticate('jwt',{session:false}),(req, res) => {
     //console.log(req.params.name);
     MongoClient.connect('mongodb://mongosql.westus2.cloudapp.azure.com', function (err, client) {
     if (err) throw err;
@@ -153,7 +193,7 @@ router.get('/layouts/:name', (req, res) => {
 })
 
 //fetch user details for login validation
-router.get('/users', (req, res) => {
+router.get('/users',passport.authenticate('jwt',{session:false}), (req, res) => {
   MongoClient.connect('mongodb://mongosql.westus2.cloudapp.azure.com', function (err, client) {
   if (err) throw err;
   var db = client.db('ngvirtual');
@@ -176,7 +216,7 @@ res.send("Server is running..");
 })
 
 //for fetching layouts and objects respository
-router.get('/repo', (req, res) => {
+router.get('/repo',passport.authenticate('jwt',{session:false}), (req, res) => {
     MongoClient.connect('mongodb://mongosql.westus2.cloudapp.azure.com', function (err, client) {
     if (err) throw err;
     var db = client.db('ngvirtual');
@@ -194,7 +234,7 @@ router.get('/repo', (req, res) => {
 })
 
 //getting Layouts
-router.get('/layouts', (req, res) => {
+router.get('/layouts', passport.authenticate('jwt',{session:false}),(req, res) => {
     console.log("layouts api called");
     MongoClient.connect('mongodb://mongosql.westus2.cloudapp.azure.com', function (err, client) {
     if (err) throw err;
@@ -213,7 +253,7 @@ router.get('/layouts', (req, res) => {
 })
 
 //signup
-router.post('/insert', function (req, res, next){
+router.post('/insert',passport.authenticate('jwt',{session:false}), function (req, res, next){
      var user = {
         name:req.body.username,
         pass:req.body.password,
@@ -234,7 +274,7 @@ router.post('/insert', function (req, res, next){
 });
 
 //for sending message
-router.post('/sendmsg', function (req, res, next){
+router.post('/sendmsg',passport.authenticate('jwt',{session:false}), function (req, res, next){
      var msg = {
         msgSubject:req.body.msgSubject,
         msgBody:req.body.msgBody,
@@ -268,7 +308,7 @@ router.post('/sendmsg', function (req, res, next){
 });
 
 //for sending reply to users
-router.post('/reply', function (req, res, next){
+router.post('/reply',passport.authenticate('jwt',{session:false}), function (req, res, next){
      var reply = {
        to_name:req.body.to_name,
        to_id:req.body.to_id,
@@ -301,7 +341,7 @@ router.post('/reply', function (req, res, next){
 });
 
 //for receiving message
-router.get('/getmsg', (req, res) => {
+router.get('/getmsg',passport.authenticate('jwt',{session:false}), (req, res) => {
   MongoClient.connect('mongodb://mongosql.westus2.cloudapp.azure.com', function (err, client) {
   if (err) throw err;
   var db = client.db('ngvirtual');
@@ -319,7 +359,7 @@ router.get('/getmsg', (req, res) => {
 })
 
 //get replies
-router.get('/getreply', (req, res) => {
+router.get('/getreply', passport.authenticate('jwt',{session:false}),(req, res) => {
   MongoClient.connect('mongodb://mongosql.westus2.cloudapp.azure.com', function (err, client) {
   if (err) throw err;
   var db = client.db('ngvirtual');
@@ -403,7 +443,7 @@ router.post('/upload',
 //Uploading end
 
 //retrieving objects
-router.get('/getObjects',(req,res)=>{
+router.get('/getObjects',passport.authenticate('jwt',{session:false}),(req,res)=>{
 MongoClient.connect('mongodb://mongosql.westus2.cloudapp.azure.com', function (err, client) {
   if (err) throw err;
   var db = client.db('ngvirtual');

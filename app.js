@@ -2,6 +2,8 @@ const express = require('express')
 const bodyParser = require('body-parser')
 const path = require('path')
 const app = express();
+const jwt = require('jsonwebtoken');
+const passport = require('passport');
 
 //cors error solution
 app.use(function(req, res, next) {
@@ -21,6 +23,12 @@ app.use(bodyParser.urlencoded({limit: '50mb', extended: true}));
 //Angular dist output folder
 app.use(express.static(path.join(__dirname, 'dist')));
 app.use('/layout/images',express.static(__dirname+'/assets/images'));
+
+
+//Passport Authentication
+app.use(passport.initialize());
+app.use(passport.session());
+require('./config/passport')(passport);
 
 //API location
 app.use('/api', api);
