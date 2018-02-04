@@ -38,7 +38,8 @@ router.post('/register',(req,res)=>{
                     console.log("New user created");
                 })
             }
-     db.collection('users').findOne({"mid":req.body.mid},function(err,userData){
+     db.collection('users').findOne({"mid":req.body},function(err,userData){
+//         console.log(req);
             const token = jwt.sign({
                 data:req.body.mid},'secret-message',{
                     expiresIn: 604800 // 1 week
