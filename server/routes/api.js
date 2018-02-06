@@ -24,40 +24,6 @@ let response = {
 };
 
 //insert project
-router.post('/register',(req,res)=>{
-    
-    MongoClient.connect('mongodb://mongosql.westus2.cloudapp.azure.com', function (err, client){
-        if(err) throw err;
-        var db = client.db('ngvirtual');
-       db.collection('users').findOne({"mid":req.body.mid}, function(err, result){
-            if (err) throw err;
-            if(!result){
-                mid= req.body;
-                db.collection('users').insertOne(mid,function(err, user){
-                    if(err) throw err;
-                    console.log("New user created");
-                })
-            }
-     db.collection('users').findOne({"mid":req.body},function(err,userData){
-//         console.log(req);
-            const token = jwt.sign({
-                data:req.body.mid},'secret-message',{
-                    expiresIn: 604800 // 1 week
-                });
-                res.json({
-                    success:true,
-                    token:`Bearer ${token}`,
-                    user:{
-                        mid:req.body.mid
-                    }
-
-                });
-            })
-            });
-
-        });
-    })
-
 
 //insert project
 router.post('/insertProject', (req, res)=>{
